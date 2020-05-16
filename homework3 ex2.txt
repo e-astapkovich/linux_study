@@ -1,0 +1,93 @@
+2. 
+
+ЗАДАНИЕ:
+
+	Заставить скрипт запускаться. Запустить. Удалить вручную все созданные скриптом файлы. В ответе указать содержимое скрипта, его вывод, команды для запуска и отчистки.
+
+РЕШЕНИЕ:
+
+Файл скрипта script.sh должен быть в этом же пулл реквесте (если я все правильно запушил...)
+
+Первоначально скрипт не запускался, т.к. не было пермиссий на выполнение. Добавил пользователю бит на выполнение:
+	$ chmod u+x script.sh
+После этого скрипт запустился.
+
+Команда для запуска:
+	$ ~/script.sh
+Или если находиться в домашней папке, то можно запустить так:
+	$ ./script.sh
+
+Удаление созданных скриптом файлов:
+	$ rm -rv /tmp/lesson3 /tmp/*Link*
+
+Вывод скрипта.
+Как скопипастить вывод из терминала, я на разобрался...
+Но придумал двухходовку
+- перенаправил потоки вывода скрипта (поток вывода и поток ошибок) в текстовый файл.
+	$ ./script.sh 1> script_output.txt 2>&1
+- из хостовой Windows по FTP подключился к гостевой Ubuntu и скопировал получившийся файл. 
+
+Вот вывот скрипта:
+
+/////////////////////////////
+
+SCRIPT ./script.sh RUN
+mkdir: created directory '/tmp/lesson3'
+mkdir: created directory '/tmp/lesson3/permissions'
+METADATA OF FILES:
+ 
+/tmp/lesson3:
+total 12
+31592 drwxrwxr-x  3 eastapkovich eastapkovich 4096 мая 13 01:57 .
+16385 drwxrwxrwt 15 root         root         4096 мая 13 01:57 ..
+31593 drwxrwxr-x  2 eastapkovich eastapkovich 4096 мая 13 01:57 permissions
+31596 lrwxrwxrwx  1 eastapkovich eastapkovich   37 мая 13 01:57 softLinkFile2 -> /tmp/lesson3/permissions/softLinkFile
+
+/tmp/lesson3/permissions:
+total 16
+31593 drwxrwxr-x 2 eastapkovich eastapkovich 4096 мая 13 01:57 .
+31592 drwxrwxr-x 3 eastapkovich eastapkovich 4096 мая 13 01:57 ..
+31594 -rw-rw-r-- 2 eastapkovich eastapkovich   31 мая 13 01:57 file1_cont.txt
+31594 -rw-rw-r-- 2 eastapkovich eastapkovich   31 мая 13 01:57 hardLinkFile
+31595 lrwxrwxrwx 1 eastapkovich eastapkovich   39 мая 13 01:57 softLinkFile -> /tmp/lesson3/permissions/file1_cont.txt
+DATA IN FILES:
+
+#1
+small text content of the file
+#2
+small text content of the file
+#3
+small text content of the file
+#4
+small text content of the file
+renamed '/tmp/lesson3/permissions/softLinkFile' -> '/tmp/softLinkFile'
+renamed '/tmp/lesson3/permissions/hardLinkFile' -> '/tmp/hardLinkFile'
+
+AFTER MOVING OF LINKS
+METADATA OF FILES:
+
+/tmp/lesson3:
+total 12
+31592 drwxrwxr-x  3 eastapkovich eastapkovich 4096 мая 13 01:57 .
+16385 drwxrwxrwt 15 root         root         4096 мая 13 01:57 ..
+31593 drwxrwxr-x  2 eastapkovich eastapkovich 4096 мая 13 01:57 permissions
+31596 lrwxrwxrwx  1 eastapkovich eastapkovich   37 мая 13 01:57 softLinkFile2 -> /tmp/lesson3/permissions/softLinkFile
+
+/tmp/lesson3/permissions:
+total 12
+31593 drwxrwxr-x 2 eastapkovich eastapkovich 4096 мая 13 01:57 .
+31592 drwxrwxr-x 3 eastapkovich eastapkovich 4096 мая 13 01:57 ..
+31594 -rw-rw-r-- 2 eastapkovich eastapkovich   31 мая 13 01:57 file1_cont.txt
+DATA IN FILES:
+
+#1
+small text content of the file
+#2
+small text content of the file
+#3
+small text content of the file
+#4
+cat: /tmp/lesson3/softLinkFile2: No such file or directory
+SCRIPT ./script.sh END
+
+/////////////////////////////
