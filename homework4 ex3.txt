@@ -1,0 +1,46 @@
+3.
+
+ЗАДАНИЕ:
+
+Используя условную конструкцию ниже, которая проверяет, успешно ли завершилась предыдущая команда, напишите скрипт, который должен добавить в систему 2 группы web и geekbrains, если их еще нет. Если они есть, то нужно вывести эту информацию на экран, а также вывести их уникальный GID и всех пользователей, которые добавлены в эти группы.
+
+После этого необобходимо создать пользователя rockstar с фиксированным UID=143, для которого группа web является основной группой, а группа geekbrains - второстепенной.
+
+Если пользователь уже существует, необходимо удостовериться, что настройки выше указаны верно. Если нет - то изменить. Вывести информационное сообщение на экран.
+
+if [[ $? == 0 ]] ; then
+    echo "success"
+else
+    echo "fail"
+fi
+
+
+
+РЕШЕНИЕ:
+
+Не справился с последним подпунктом "удостовериться, что настройки выше указаны верно". Т.е. надо было найти пользователя rockstar, и проверить какие у него UID и GID, да ведь? Но я не разобрался, как получить отдельно UID, чтоб сравнить его с заданым значением...
+
+Листинг моего скрипта:
+
+#!/bin/bash
+cat /etc/group | grep web > /dev/null 2>&1
+if [[ $? == 0 ]]; then 
+	echo "group WEB already exists"
+	cat /etc/group | grep web
+else
+	sudo groupadd web	
+fi
+cat /etc/group | grep geekbrains > /dev/null 2>&1
+if [[ $? == 0 ]]; then
+	echo "group GEEKBRAINS already exists"
+	cat /etc/group | grep geekbrains
+else
+	sudo groupadd geekbrains
+fi
+cat /etc/passwd | grep rockstar > /dev/null 2>&1
+if [[ $? == 0 ]]; then
+	echo "user rockstar already exists"
+	cat /etc/passwd | grep rockstar
+else
+	sudo useradd -m -p $(openssl passwd "123") -u 143 -g web -G geekbrains -s /bin/bash rockstar
+fi
